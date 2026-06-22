@@ -1,0 +1,9 @@
+<Solution>
+  <Project Path="BuildingBlocks/BuildingBlocks.csproj" />
+  <Project Path="Fitness.Auth/Fitness.Auth.csproj" />
+  <Project Path="Fitness.CalculationEngine/Fitness.CalculationEngine.csproj" />
+  <Project Path="Fitness.Nutrition/Fitness.Nutrition.csproj" />
+  <Project Path="Fitness.ProgressTracking/Fitness.ProgressTracking.csproj" />
+  <Project Path="Fitness.UserProfile/Fitness.UserProfile.csproj" />
+  <Project Path="Fitness.Workout/Fitness.Workout.csproj" />
+</Solution>

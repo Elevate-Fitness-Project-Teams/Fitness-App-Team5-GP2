@@ -1,0 +1,6 @@
+@Fitness.CalculationEngine_HostAddress = http://localhost:5264
+
+GET {{Fitness.CalculationEngine_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
