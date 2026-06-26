@@ -1,4 +1,7 @@
-
+using BuildingBlocks.Middleware;
+using Fitness.CalculationEngine.Data;
+using Fitness.CalculationEngine.Extensions;
+using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
 namespace Fitness.CalculationEngine;
@@ -9,34 +12,30 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        // Add services to the container.
-
         builder.Services.AddControllers();
-        // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
         builder.Services.AddOpenApi();
+        builder.Services.AddDbContext<CalculationEngineDbContext>(options =>
+            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+        builder.Services.RegisterApplicationDependancies();
 
         var app = builder.Build();
 
-        // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
             app.MapOpenApi().AllowAnonymous();
             app.MapScalarApiReference(options =>
             {
                 options
-                    .WithTitle("Examination System")
+                    .WithTitle("Fitness Calculation Engine")
                     .WithTheme(ScalarTheme.Purple)
                     .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient);
             }).AllowAnonymous();
         }
 
+        app.UseMiddleware<ExceptionHandlingMiddleware>();
         app.UseHttpsRedirection();
-
         app.UseAuthorization();
-
-
         app.MapControllers();
-
         app.Run();
     }
 }
