@@ -1,5 +1,8 @@
 <Solution>
   <Project Path="BuildingBlocks/BuildingBlocks.csproj" />
+  <Project Path="docker-compose.dcproj">
+    <Build />
+  </Project>
   <Project Path="Fitness.Auth/Fitness.Auth.csproj" />
   <Project Path="Fitness.CalculationEngine/Fitness.CalculationEngine.csproj" />
   <Project Path="Fitness.Nutrition/Fitness.Nutrition.csproj" />
