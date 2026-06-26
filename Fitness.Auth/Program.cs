@@ -13,7 +13,7 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         builder.Services.AddControllers();
-        builder.Services.AddOpenApi();
+        //builder.Services.AddOpenApi();
         builder.Services.AddDbContext<AuthDbContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
         builder.Services.RegisterApplicationDependancies();
@@ -22,7 +22,7 @@ public class Program
 
         if (app.Environment.IsDevelopment())
         {
-            app.MapOpenApi().AllowAnonymous();
+            //app.MapOpenApi().AllowAnonymous();
             app.MapScalarApiReference(options =>
             {
                 options

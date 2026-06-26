@@ -1,6 +1,6 @@
 namespace Fitness.UserProfile.Domain.Entities;
 
-public class UserProfile
+public class Profile
 {
     public int Id { get; set; }
     public string FirstName { get; set; } = string.Empty;

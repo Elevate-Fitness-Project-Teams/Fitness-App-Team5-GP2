@@ -10,7 +10,7 @@ public class UserProfileDbContext : DbContext
     {
     }
 
-    public DbSet<UserProfile> UserProfiles => Set<UserProfile>();
+    public DbSet<Profile> UserProfiles => Set<Profile>();
     public DbSet<UserSettings> UserSettings => Set<UserSettings>();
     public DbSet<NotificationSettings> NotificationSettings => Set<NotificationSettings>();
     public DbSet<PrivacySettings> PrivacySettings => Set<PrivacySettings>();
