@@ -1,3 +1,8 @@
+using BuildingBlocks.Middleware;
+using Fitness.Workout.Data;
+using Fitness.Workout.Extensions;
+using Microsoft.EntityFrameworkCore;
+using Scalar.AspNetCore;
 
 namespace Fitness.Workout;
 
@@ -7,27 +12,30 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        // Add services to the container.
-
         builder.Services.AddControllers();
-        // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
         builder.Services.AddOpenApi();
+        builder.Services.AddDbContext<WorkoutDbContext>(options =>
+            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+        builder.Services.RegisterApplicationDependancies();
 
         var app = builder.Build();
 
-        // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
-            app.MapOpenApi();
+            app.MapOpenApi().AllowAnonymous();
+            app.MapScalarApiReference(options =>
+            {
+                options
+                    .WithTitle("Fitness Workout")
+                    .WithTheme(ScalarTheme.Purple)
+                    .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient);
+            }).AllowAnonymous();
         }
 
+        app.UseMiddleware<ExceptionHandlingMiddleware>();
         app.UseHttpsRedirection();
-
         app.UseAuthorization();
-
-
         app.MapControllers();
-
         app.Run();
     }
 }
