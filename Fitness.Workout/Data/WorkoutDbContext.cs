@@ -11,7 +11,7 @@ public class WorkoutDbContext : DbContext
     }
 
     public DbSet<WorkoutPlan> WorkoutPlans => Set<WorkoutPlan>();
-    public DbSet<Workout> Workouts => Set<Workout>();
+    public DbSet<Workout.Domain.Entities.Workout> Workouts => Set<Workout.Domain.Entities.Workout>();
     public DbSet<Exercise> Exercises => Set<Exercise>();
     public DbSet<WorkoutExercise> WorkoutExercises => Set<WorkoutExercise>();
     public DbSet<WorkoutSession> WorkoutSessions => Set<WorkoutSession>();

@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Fitness.Workout.Data.Configurations;
 
-public class WorkoutConfiguration : IEntityTypeConfiguration<Workout>
+public class WorkoutConfiguration : IEntityTypeConfiguration<Workout.Domain.Entities.Workout>
 {
-    public void Configure(EntityTypeBuilder<Workout> builder)
+    public void Configure(EntityTypeBuilder<Workout.Domain.Entities.Workout> builder)
     {
         builder.HasKey(w => w.WorkoutId);
 

@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Fitness.UserProfile.Data.Configurations;
 
-public class UserProfileConfiguration : IEntityTypeConfiguration<UserProfile>
+public class UserProfileConfiguration : IEntityTypeConfiguration<Profile>
 {
-    public void Configure(EntityTypeBuilder<UserProfile> builder)
+    public void Configure(EntityTypeBuilder<Profile> builder)
     {
         builder.HasKey(p => p.Id);
 

@@ -1,0 +1,31 @@
+services:
+  fitness.auth:
+    image: ${DOCKER_REGISTRY-}fitnessauth
+    build:
+      context: .
+      dockerfile: Fitness.Auth/Dockerfile
+  fitness.calculationengine:
+    image: ${DOCKER_REGISTRY-}fitnesscalculationengine
+    build:
+      context: .
+      dockerfile: Fitness.CalculationEngine/Dockerfile
+  fitness.nutrition:
+    image: ${DOCKER_REGISTRY-}fitnessnutrition
+    build:
+      context: .
+      dockerfile: Fitness.Nutrition/Dockerfile
+  fitness.progresstracking:
+    image: ${DOCKER_REGISTRY-}fitnessprogresstracking
+    build:
+      context: .
+      dockerfile: Fitness.ProgressTracking/Dockerfile
+  fitness.userprofile:
+    image: ${DOCKER_REGISTRY-}fitnessuserprofile
+    build:
+      context: .
+      dockerfile: Fitness.UserProfile/Dockerfile
+  fitness.workout:
+    image: ${DOCKER_REGISTRY-}fitnessworkout
+    build:
+      context: .
+      dockerfile: Fitness.Workout/Dockerfile
