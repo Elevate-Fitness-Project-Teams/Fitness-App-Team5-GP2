@@ -1,12 +1,13 @@
+using Fitness.CalculationEngine.Domain.Enums;
+
 namespace Fitness.CalculationEngine.Domain.Entities;
 
-public class FitnessPlanConfig
+public class FitnessPlanConfig : BaseEntity
 {
-    public string PlanId { get; set; } = string.Empty;
-    public string PlanName { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
-    public string Goal { get; set; } = string.Empty;
-    public string Status { get; set; } = string.Empty;
+    public Goal Goal { get; set; } 
+    public UserStatus Status { get; set; }
     public double MinCalorie { get; set; }
     public double MaxCalorie { get; set; }
     public int WorkoutsPerWeek { get; set; }

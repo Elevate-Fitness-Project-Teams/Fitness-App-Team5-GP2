@@ -1,9 +1,8 @@
 namespace Fitness.CalculationEngine.Domain.Entities;
 
-public class CalculatedMetrics
+public class CalculatedMetrics : BaseEntity
 {
-    public int Id { get; set; }
-    public int UserId { get; set; }
+    public string UserId { get; set; }
     public double Bmr { get; set; }
     public double Tdee { get; set; }
     public double CalorieTarget { get; set; }

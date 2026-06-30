@@ -1,5 +1,5 @@
 using BuildingBlocks.Middleware;
-using Fitness.CalculationEngine.Data;
+using Fitness.CalculationEngine.Infrastructure.Persistence.DbContexts;
 using Fitness.CalculationEngine.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
@@ -14,9 +14,8 @@ public class Program
 
         builder.Services.AddControllers();
         //builder.Services.AddOpenApi();
-        builder.Services.AddDbContext<CalculationEngineDbContext>(options =>
-            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-        builder.Services.RegisterApplicationDependancies();
+
+        builder.Services.RegisterApplicationDependancies(builder.Configuration);
 
         var app = builder.Build();
 

@@ -1,10 +1,9 @@
 namespace Fitness.CalculationEngine.Domain.Entities;
 
-public class UserAssignedPlan
+public class UserAssignedPlan : BaseEntity
 {
-    public int Id { get; set; }
-    public int UserId { get; set; }
-    public string PlanId { get; set; } = string.Empty;
+    public string UserId { get; set; }
+    public Guid PlanId { get; set; } 
     public DateTime AssignedAt { get; set; } = DateTime.UtcNow;
     public bool IsActive { get; set; } = true;
 
