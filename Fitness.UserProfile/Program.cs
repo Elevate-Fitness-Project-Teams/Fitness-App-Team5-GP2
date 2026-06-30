@@ -34,6 +34,7 @@ public class Program
 
         app.UseMiddleware<ExceptionHandlingMiddleware>();
         app.UseHttpsRedirection();
+        app.UseStaticFiles(); // serves uploaded profile pictures from wwwroot
         app.UseAuthorization();
         app.MapControllers();
         app.Run();

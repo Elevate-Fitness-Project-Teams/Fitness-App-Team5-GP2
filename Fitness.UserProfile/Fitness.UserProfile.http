@@ -1,6 +1,66 @@
-@Fitness.UserProfile_HostAddress = http://localhost:5071
+@host = http://localhost:5071
+@userId = 1
 
-GET {{Fitness.UserProfile_HostAddress}}/weatherforecast/
+### Get my profile  (200)
+GET {{host}}/api/v1/profile
+X-User-Id: {{userId}}
 Accept: application/json
+
+### Get my profile without auth header  (401)
+GET {{host}}/api/v1/profile
+Accept: application/json
+
+### Update my profile  (200)
+PUT {{host}}/api/v1/profile
+X-User-Id: {{userId}}
+Content-Type: application/json
+
+{
+  "firstName": "Ahmed",
+  "lastName": "Mohamed",
+  "email": "ahmed@example.com",
+  "phoneNumber": "+201234567890"
+}
+
+### Update profile with invalid data  (400 validation)
+PUT {{host}}/api/v1/profile
+X-User-Id: {{userId}}
+Content-Type: application/json
+
+{
+  "firstName": "A",
+  "lastName": "Ali",
+  "email": "not-an-email",
+  "phoneNumber": "123"
+}
+
+### Get my settings (grouped)  (200)
+GET {{host}}/api/v1/settings
+X-User-Id: {{userId}}
+Accept: application/json
+
+### Update settings - PARTIAL (only the sent fields change)  (200)
+PUT {{host}}/api/v1/settings
+X-User-Id: {{userId}}
+Content-Type: application/json
+
+{
+  "preferences": { "theme": "dark", "language": "ar" },
+  "notifications": { "workoutReminders": false },
+  "privacy": { "profileVisibility": "public" }
+}
+
+### Upload profile picture (JPG/PNG, max 5MB)  (200)
+# Replace ./me.png with a real image path before sending.
+POST {{host}}/api/v1/profile/picture
+X-User-Id: {{userId}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary
+
+------WebKitFormBoundary
+Content-Disposition: form-data; name="profilePicture"; filename="me.png"
+Content-Type: image/png
+
+< ./me.png
+------WebKitFormBoundary--
 
 ###
