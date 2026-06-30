@@ -1,22 +1,18 @@
 using System.Net;
 using BuildingBlocks.Models;
-using Fitness.Workout.Data;
+using Fitness.Workout.Repositories;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 
 namespace Fitness.Workout.Features.Queries.GetWorkoutById;
 
-public class GetWorkoutByIdQueryHandler(WorkoutDbContext context)
+public class GetWorkoutByIdQueryHandler(IWorkoutRepository repository)
     : IRequestHandler<GetWorkoutByIdQuery, ApiResponse<WorkoutDetailDto>>
 {
     public async Task<ApiResponse<WorkoutDetailDto>> Handle(
         GetWorkoutByIdQuery request,
         CancellationToken cancellationToken)
     {
-        var workout = await context.Workouts
-            .Include(w => w.WorkoutExercises)
-                .ThenInclude(we => we.Exercise)
-            .FirstOrDefaultAsync(w => w.WorkoutId == request.WorkoutId, cancellationToken);
+        var workout = await repository.GetByIdAsync(request.WorkoutId, cancellationToken);
 
         if (workout is null)
             return ApiResponse<WorkoutDetailDto>.Failure("RES_WORKOUT_NOT_FOUND", HttpStatusCode.NotFound);
