@@ -16,7 +16,7 @@ public class Repository<T>
         _entities = _calculationEngineDbContext.Set<T>();
     }
     public IQueryable<T> Get()
-        => _entities;
+        => _entities.AsNoTracking();
 
     public void Add(T entity)
     {
@@ -25,7 +25,7 @@ public class Repository<T>
         entity.CreatedBy = "";
         _entities.Add(entity);
     }
-    public async Task<int> SaveChangeAsync()
+    public async Task<int> SaveChangeAsync(CancellationToken cancellationToken)
     {
         return await _calculationEngineDbContext.SaveChangesAsync();
     }

@@ -26,13 +26,13 @@ public class CalculationService
         return bmr * factory;
     }
 
-    public double CalculateCalorieTarget (double tdee , Goal goal)
+    public double CalculateCalorieTarget (double tdee , FitnessGoal goal)
     {
         return goal switch
         {
-            Goal.LoseWeight => tdee - 500,
-            Goal.GainWeight => tdee +300 ,
-            Goal.GainMoreFlexible => tdee + 150,
+            FitnessGoal.LoseWeight => tdee - 500,
+            FitnessGoal.GainWeight => tdee +300 ,
+            FitnessGoal.GainMoreFlexible => tdee + 150,
             _ => tdee
         };
     }
