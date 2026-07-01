@@ -1,6 +1,6 @@
 ﻿namespace Fitness.CalculationEngine.Shared.Response;
 
-public class RequestResult<TResult>
+public class RequestResult<TResult> 
 {
     public TResult? Result { get; set; }
     public ResultCode Code { get; set; }
@@ -16,13 +16,13 @@ public class RequestResult<TResult>
         };
     }
 
-    public static RequestResult<object> Failure(ResultCode code)
+    public static RequestResult<TResult> Failure(ResultCode code)
     {
-        return new RequestResult<object>
+        return new RequestResult<TResult>
         {
             Code = code,
             Success = false,
-            Result = null
+            Result = default
         };
     }
 

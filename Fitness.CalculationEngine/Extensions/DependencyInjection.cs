@@ -9,6 +9,7 @@ public static class DependencyInjection
     {
         services.AddApplicationDependancies<ICalculationEngineMarker>();
         services.AddInfrastructureDependancies(configuration);
+        services.RegisterApplicationDependancies();
         return services;
     }
 }

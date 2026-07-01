@@ -9,10 +9,10 @@ namespace Fitness.CalculationEngine.Features.UserFitnessStats.CheckUserFitnessSt
 public record CheckUserFitnessStateIsExistQuery
     (string UserId) : IRequest<RequestResult<bool>>;
 
-public class CheckUserFitnessStateIsExistQueryHandler(Repository<UserFitnessStat> repository) 
+public class CheckUserFitnessStateIsExistQueryHandler(Repository<Domain.Entities.UserFitnessStat> repository) 
     : IRequestHandler<CheckUserFitnessStateIsExistQuery, RequestResult<bool>>
 {
-    private readonly Repository<UserFitnessStat> _repository = repository;
+    private readonly Repository<Domain.Entities.UserFitnessStat> _repository = repository;
 
     public async Task<RequestResult<bool>> Handle(CheckUserFitnessStateIsExistQuery request, CancellationToken cancellationToken)
     {

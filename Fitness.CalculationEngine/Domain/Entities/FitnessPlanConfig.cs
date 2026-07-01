@@ -6,7 +6,7 @@ public class FitnessPlanConfig : BaseEntity
 {
     public string Name { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
-    public Goal Goal { get; set; } 
+    public FitnessGoal Goal { get; set; } 
     public UserStatus Status { get; set; }
     public double MinCalorie { get; set; }
     public double MaxCalorie { get; set; }
