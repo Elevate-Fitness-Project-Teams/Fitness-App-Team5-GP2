@@ -13,7 +13,7 @@ public class TokenService(IOptions<JwtOptions> jwtOptions)
 {
     private readonly JwtOptions _options = jwtOptions.Value;
 
-    public string GenerateAccessToken(User user,string serviceName)
+    public string GenerateAccessToken(User user)
     {
         var claims = new[]
         {
