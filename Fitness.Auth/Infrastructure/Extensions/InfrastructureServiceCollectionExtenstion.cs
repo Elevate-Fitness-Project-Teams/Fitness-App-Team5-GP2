@@ -1,9 +1,11 @@
 ﻿using Fitness.Auth.Domain.Entities;
 using Fitness.Auth.Infrastructure.Persistence.DbContexts;
 using Fitness.Auth.Shared.Models;
+using Fitness.Auth.Shared.Repositories;
 using Fitness.Auth.Shared.Services;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -33,7 +35,7 @@ public static class InfrastructureServiceCollectionExtenstion
             };
         });
         services.AddAuthorization();
-        services.AddIdentityCore<User>(options =>
+        services.AddIdentity<User, IdentityRole<Guid>>(options =>
         {
             options.Password.RequireDigit = true;
             options.Password.RequireLowercase = true;
@@ -41,7 +43,9 @@ public static class InfrastructureServiceCollectionExtenstion
             options.Password.RequireUppercase = true;
             options.Password.RequiredLength = 6;
             options.Password.RequiredUniqueChars = 1;
-        }).AddEntityFrameworkStores<AuthDbContext>();
+        })
+        .AddEntityFrameworkStores<AuthDbContext>()
+        .AddDefaultTokenProviders();
         services.AddDbContext<AuthDbContext>(options =>
             options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
         services.AddMassTransit(config =>
@@ -55,6 +59,8 @@ public static class InfrastructureServiceCollectionExtenstion
                 });
             });
         });
+        services.AddScoped(typeof(Repository<>));
+
         return services;
     }
 }
