@@ -47,6 +47,7 @@ public class Program
         {
             endpoint.MapEndpoint(globalGroup);
         }
+        app.ApplyDatabaseMigrations();
         app.UseMiddleware<ExceptionHandlingMiddleware>();
         app.UseHttpsRedirection();
         app.UseAuthorization();

@@ -4,11 +4,31 @@ services:
     build:
       context: .
       dockerfile: Fitness.Auth/Dockerfile
+    depends_on:
+      - db
+      - rabbitmq                    # <-- Add dependency on rabbitmq
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=db,1433;Database=Fitness.Auth;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True;
+      - RabbitMQ__Host=rabbitmq # <-- Add connection info for RabbitMQ
+      - RabbitMQ__UserName=guest
+      - RabbitMQ__Password=guest
+    networks:
+      - myapp-network
   fitness.calculationengine:
     image: ${DOCKER_REGISTRY-}fitnesscalculationengine
     build:
       context: .
       dockerfile: Fitness.CalculationEngine/Dockerfile
+    depends_on:
+      - db
+      - rabbitmq                    # <-- Add dependency on rabbitmq
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=db,1433;Database=Fitness.CalculationEngine;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True;
+      - RabbitMQ__Host=rabbitmq # <-- Add connection info for RabbitMQ
+      - RabbitMQ__UserName=guest
+      - RabbitMQ__Password=guest
+    networks:
+      - myapp-network
   fitness.nutrition:
     image: ${DOCKER_REGISTRY-}fitnessnutrition
     build:
@@ -29,3 +49,32 @@ services:
     build:
       context: .
       dockerfile: Fitness.Workout/Dockerfile
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sqlserverdb
+    ports:
+      - "1433:1433"
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=YourStrong!Passw0rd
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+    networks:
+      - myapp-network
+  rabbitmq:                             # <-- New RabbitMQ service
+    image: rabbitmq:3-management        # <-- Image with management UI [citation:4][citation:9]
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"                     # Port for your app to connect
+      - "15672:15672"                   # Port for the management UI
+    environment:
+      RABBITMQ_DEFAULT_USER: guest      # Set default user
+      RABBITMQ_DEFAULT_PASS: guest      # Set default password
+    networks:
+      - myapp-network
+
+volumes:
+  sqlserver_data:
+
+networks:
+  myapp-network:

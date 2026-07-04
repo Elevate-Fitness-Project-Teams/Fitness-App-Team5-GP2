@@ -1,6 +1,7 @@
 using BuildingBlocks.Middleware;
-using Fitness.Auth.Data;
 using Fitness.Auth.Extensions;
+using Fitness.Auth.Infrastructure.Persistence.DbContexts;
+using Fitness.Auth.Shared.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
@@ -14,9 +15,7 @@ public class Program
 
         builder.Services.AddControllers();
         //builder.Services.AddOpenApi();
-        builder.Services.AddDbContext<AuthDbContext>(options =>
-            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-        builder.Services.RegisterApplicationDependancies();
+        builder.Services.RegisterApplicationDependancies(builder.Configuration);
 
         var app = builder.Build();
 
@@ -31,7 +30,18 @@ public class Program
                     .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient);
             }).AllowAnonymous();
         }
+        var globalGroup = app.MapGroup("");
+        var endpointDefinitions = typeof(Program).Assembly
+        .GetTypes()
+        .Where(t => typeof(IEndpoint).IsAssignableFrom(t) && !t.IsAbstract)
+        .Select(Activator.CreateInstance)
+        .Cast<IEndpoint>();
 
+        foreach (var endpoint in endpointDefinitions)
+        {
+            endpoint.MapEndpoint(globalGroup);
+        }
+        app.ApplyDatabaseMigrations(); 
         app.UseMiddleware<ExceptionHandlingMiddleware>();
         app.UseHttpsRedirection();
         app.UseAuthorization();
