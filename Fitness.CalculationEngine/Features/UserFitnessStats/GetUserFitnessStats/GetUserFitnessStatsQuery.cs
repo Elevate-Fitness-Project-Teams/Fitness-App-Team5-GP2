@@ -17,11 +17,9 @@ public record GetUserFitnessStatsResponse(double Weight, double Height, int Age,
 public class GetUserFitnessStatsQueryHandler(Repository<UserFitnessStat> repository) : IRequestHandler<GetUserFitnessStatsQuery, RequestResult<GetUserFitnessStatsResponse>>
 {
     private readonly Repository<UserFitnessStat> _repository = repository;
-
     public async Task<RequestResult<GetUserFitnessStatsResponse>> Handle(GetUserFitnessStatsQuery request, CancellationToken cancellationToken)
     {
-        var userStats = await _repository.Get()
-                                   .Where(s => s.UserId == request.UserId)
+        var userStats = await _repository.Get(s => s.UserId == request.UserId)
                                    .Select(s => new GetUserFitnessStatsResponse
                                        (s.Weight,s.Height,s.Age,s.Gender,s.Goal,s.ActivityLevel)
                                     )

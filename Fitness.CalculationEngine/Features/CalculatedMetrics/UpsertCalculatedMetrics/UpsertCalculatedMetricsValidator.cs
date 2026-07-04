@@ -2,9 +2,9 @@
 
 namespace Fitness.CalculationEngine.Features.CalculatedMetrics.Calculate;
 
-public class CalculateValidator:AbstractValidator<CalculateCommand>
+public class UpsertCalculatedMetricsValidator:AbstractValidator<UpsertCalculatedMetricsCommand>
 {
-    public CalculateValidator()
+    public UpsertCalculatedMetricsValidator()
     {
         RuleFor(x =>x.UserId).NotEmpty().WithMessage("UserId is required.");
     }

@@ -8,23 +8,23 @@ using System.Net;
 
 namespace Fitness.CalculationEngine.Features.CalculatedMetrics.Calculate;
 
-public class CaculateEndpoint : IEndpoint
+public class UpsertCalculatedMetricsEndpoint : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapPost(Endpoints.CalculatedMatrics.Calculate,
-            async ([FromBody] CalculateCommand request, ICurrentUser currentUser, IMediator _mediator
+            async ([FromBody] UpsertCalculatedMetricsCommand request, ICurrentUser currentUser, IMediator _mediator
             , CancellationToken cancellationToken) =>
             {
                 var result = await _mediator.Send(request, cancellationToken);
                 if (!result.Success)
-                    return ApiResponse<CalculateResponse>.Failure(result.Code.ToString(), HttpStatusCode.Conflict);
-                return ApiResponse<CalculateResponse>.Successed(result.Result, HttpStatusCode.OK);
+                    return ApiResponse<UpsertCalculatedMetricsResponse>.Failure(result.Code.ToString(), HttpStatusCode.Conflict);
+                return ApiResponse<UpsertCalculatedMetricsResponse>.Successed(result.Result, HttpStatusCode.OK);
             })
         //.RequireAuthorization()
         .WithName("Calculate")
         .WithTags("Fitness Calculation Engine")
-        .Produces<ApiResponse<CalculateResponse>>(StatusCodes.Status200OK)
+        .Produces<ApiResponse<UpsertCalculatedMetricsResponse>>(StatusCodes.Status200OK)
         .ProducesValidationProblem(StatusCodes.Status400BadRequest)
         .Produces(StatusCodes.Status401Unauthorized);
     }
