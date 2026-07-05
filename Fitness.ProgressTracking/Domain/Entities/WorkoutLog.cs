@@ -1,10 +1,9 @@
 namespace Fitness.ProgressTracking.Domain.Entities;
 
-public class WorkoutLog
+public class WorkoutLog : BaseEntity
 {
-    public int Id { get; set; }
-    public int UserId { get; set; }
-    public int WorkoutId { get; set; }
+    public string UserId { get; set; }
+    public string WorkoutId { get; set; }
     public string SessionId { get; set; } = string.Empty;
     public int DurationInMinutes { get; set; }
     public int CaloriesBurned { get; set; }

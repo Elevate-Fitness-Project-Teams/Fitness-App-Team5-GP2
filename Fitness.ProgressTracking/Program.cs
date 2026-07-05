@@ -1,6 +1,7 @@
 using BuildingBlocks.Middleware;
-using Fitness.ProgressTracking.Data;
 using Fitness.ProgressTracking.Extensions;
+using Fitness.ProgressTracking.Infrastructure.Persistence.Contexts;
+using Fitness.ProgressTracking.Shared.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
@@ -31,7 +32,16 @@ public class Program
                     .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient);
             }).AllowAnonymous();
         }
+        var globalGroup = app.MapGroup("");
+        var endpointDefinitions = typeof(Program).Assembly
+        .GetTypes()
+        .Where(t => typeof(IEndpoint).IsAssignableFrom(t) && !t.IsAbstract)
+        .Select(Activator.CreateInstance)
+        .Cast<IEndpoint>();
 
+        foreach (var endpoint in endpointDefinitions)
+            endpoint.MapEndpoint(globalGroup);
+        app.ApplyDatabaseMigrations();
         app.UseMiddleware<ExceptionHandlingMiddleware>();
         app.UseHttpsRedirection();
         app.UseAuthorization();

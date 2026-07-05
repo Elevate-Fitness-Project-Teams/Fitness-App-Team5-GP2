@@ -1,7 +1,7 @@
 using Fitness.ProgressTracking.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Fitness.ProgressTracking.Data;
+namespace Fitness.ProgressTracking.Infrastructure.Persistence.Contexts;
 
 public class ProgressTrackingDbContext : DbContext
 {

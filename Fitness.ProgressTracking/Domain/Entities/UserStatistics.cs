@@ -1,8 +1,8 @@
 namespace Fitness.ProgressTracking.Domain.Entities;
 
-public class UserStatistics
+public class UserStatistics : BaseEntity
 {
-    public int UserId { get; set; }
+    public string UserId { get; set; }
     public int TotalWorkouts { get; set; }
     public int TotalCaloriesBurned { get; set; }
     public double TotalWeightLost { get; set; }

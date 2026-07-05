@@ -1,9 +1,8 @@
 namespace Fitness.ProgressTracking.Domain.Entities;
 
-public class BodyMeasurement
-{
-    public int Id { get; set; }
-    public int UserId { get; set; }
+public class BodyMeasurement : BaseEntity
+{   
+    public string UserId { get; set; }
     public double? Neck { get; set; }
     public double? Chest { get; set; }
     public double? Biceps { get; set; }
