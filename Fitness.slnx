@@ -1,4 +1,5 @@
 <Solution>
+  <Project Path="../Fitness.Shared/Fitness.Shared.csproj" Id="8b4baeb9-c6d1-4457-8b35-1ba00a87bf09" />
   <Project Path="BuildingBlocks/BuildingBlocks.csproj" />
   <Project Path="docker-compose.dcproj">
     <Build />

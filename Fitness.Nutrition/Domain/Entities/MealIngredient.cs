@@ -1,10 +1,9 @@
 namespace Fitness.Nutrition.Domain.Entities;
 
-public class MealIngredient
+public class MealIngredient :BaseEntity
 {
-    public int Id { get; set; }
-    public int MealId { get; set; }
-    public int IngredientId { get; set; }
+    public Guid MealId { get; set; }
+    public Guid IngredientId { get; set; }
     public string Amount { get; set; } = string.Empty;
 
     public Meal Meal { get; set; } = null!;

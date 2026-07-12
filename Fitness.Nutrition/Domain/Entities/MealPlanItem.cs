@@ -1,10 +1,9 @@
 namespace Fitness.Nutrition.Domain.Entities;
 
-public class MealPlanItem
+public class MealPlanItem :BaseEntity
 {
-    public int Id { get; set; }
-    public int MealPlanId { get; set; }
-    public int MealId { get; set; }
+    public Guid MealPlanId { get; set; }
+    public Guid MealId { get; set; }
     public string DayOfWeek { get; set; } = string.Empty;
     public string MealTime { get; set; } = string.Empty;
 

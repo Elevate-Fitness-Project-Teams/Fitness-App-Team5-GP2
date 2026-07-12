@@ -16,7 +16,7 @@ public class Program
         //builder.Services.AddOpenApi();
         builder.Services.AddDbContext<UserProfileDbContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-        builder.Services.RegisterApplicationDependancies();
+        builder.Services.RegisterApplicationDependancies(builder.Configuration);
 
         var app = builder.Build();
 
@@ -31,7 +31,7 @@ public class Program
                     .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient);
             }).AllowAnonymous();
         }
-
+        app.ApplyDatabaseMigrations();
         app.UseMiddleware<ExceptionHandlingMiddleware>();
         app.UseHttpsRedirection();
         app.UseStaticFiles(); // serves uploaded profile pictures from wwwroot

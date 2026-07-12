@@ -1,4 +1,5 @@
-﻿using Fitness.Auth.Domain.Entities;
+﻿using BuildingBlocks.Models;
+using Fitness.Auth.Domain.Entities;
 using Fitness.Auth.Infrastructure.Persistence.DbContexts;
 using Fitness.Auth.Shared.Models;
 using Fitness.Auth.Shared.Repositories;
@@ -48,16 +49,35 @@ public static class InfrastructureServiceCollectionExtenstion
         .AddDefaultTokenProviders();
         services.AddDbContext<AuthDbContext>(options =>
             options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
-        services.AddMassTransit(config =>
+        services.Configure<RabbitMQSettings>(configuration.GetSection("RabbitMQ"));
+        services.AddMassTransit(x =>
         {
-            config.UsingRabbitMq((context, cfg) =>
+
+            // 1. Register consumers from the assembly
+            x.AddConsumers(typeof(IAuthMarker).Assembly);
+
+            x.UsingRabbitMq((context, cfg) =>
             {
-                cfg.Host(configuration["RabbitMQ:Host"], "/", h =>
-                {
-                    h.Username(configuration["RabbitMQ:UserName"]);
-                    h.Password(configuration["RabbitMQ:Password"]);
+                // 2. Configure RabbitMQ connection
+                var rabbitMqSettings = configuration.GetSection("RabbitMQ").Get<RabbitMQSettings>();
+                var rabbitMqHost = rabbitMqSettings.Host ?? "localhost";
+                var rabbitMqUser = rabbitMqSettings.UserName ?? "guest";
+                var rabbitMqPass = rabbitMqSettings.Password ?? "guest";
+
+                cfg.Host(rabbitMqHost, "/", hostConfigurator => {
+                    hostConfigurator.Username(rabbitMqUser);
+                    hostConfigurator.Password(rabbitMqPass);
                 });
+
+                // 3. Configure retry policy for resilience
+                cfg.UseMessageRetry(r => r.Interval(3, TimeSpan.FromSeconds(5)));
+
+                // 4. Configure endpoints (this will auto-configure queues for your consumers)
+                cfg.ConfigureEndpoints(context);
             });
+
+            // Optional: Add Outbox Pattern for reliability (see section below)
+            // x.AddEntityFrameworkOutbox<YourDbContext>();
         });
         services.AddScoped(typeof(Repository<>));
 
