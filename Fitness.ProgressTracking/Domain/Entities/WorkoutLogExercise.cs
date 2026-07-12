@@ -1,12 +1,11 @@
 namespace Fitness.ProgressTracking.Domain.Entities;
 
-public class WorkoutLogExercise
+public class WorkoutLogExercise : BaseEntity
 {
-    public int Id { get; set; }
-    public int WorkoutLogId { get; set; }
+    public Guid WorkoutLogId { get; set; }
     public int ExerciseId { get; set; }
     public int SetsCompleted { get; set; }
-    public int RepsCompleted { get; set; }
+    public int RepsCompleted { get; set; }                 
     public double WeightUsed { get; set; }
     public bool Completed { get; set; }
 

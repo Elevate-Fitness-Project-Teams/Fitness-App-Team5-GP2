@@ -1,9 +1,8 @@
 namespace Fitness.ProgressTracking.Domain.Entities;
 
-public class WeightHistory
+public class WeightHistory :BaseEntity
 {
-    public int Id { get; set; }
-    public int UserId { get; set; }
+    public string UserId { get; set; }
     public double Weight { get; set; }
     public DateTime Date { get; set; }
     public string? Notes { get; set; }

@@ -1,5 +1,25 @@
 services:
+  db:
+   image: mcr.microsoft.com/mssql/server:2022-latest
+   container_name: sqlserverdb
+   ports:
+     - "1433:1433"
+   environment:
+     - ACCEPT_EULA=Y
+     - MSSQL_SA_PASSWORD=YourStrong!Passw0rd
+   volumes:
+     - sqlserver_data:/var/opt/mssql
+   # ⭐ Add health check to ensure SQL Server is ready
+   healthcheck:
+     test: /opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P "YourStrong!Passw0rd" -Q "SELECT 1" -b -o /dev/null
+     interval: 5s
+     timeout: 10s
+     retries: 20
+     start_period: 10s
+   networks:
+     - myapp-network
   fitness.auth:
+    container_name: auth-api
     image: ${DOCKER_REGISTRY-}fitnessauth
     build:
       context: .
@@ -15,52 +35,88 @@ services:
     networks:
       - myapp-network
   fitness.calculationengine:
+    container_name: calculationengine-api
     image: ${DOCKER_REGISTRY-}fitnesscalculationengine
     build:
       context: .
       dockerfile: Fitness.CalculationEngine/Dockerfile
+    ports:
+      - "8080:8080" 
+      - "8081:8081" 
     depends_on:
       - db
-      - rabbitmq                    # <-- Add dependency on rabbitmq
+      - rabbitmq
     environment:
       - ConnectionStrings__DefaultConnection=Server=db,1433;Database=Fitness.CalculationEngine;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True;
-      - RabbitMQ__Host=rabbitmq # <-- Add connection info for RabbitMQ
+      - RabbitMQ__Host=rabbitmq
       - RabbitMQ__UserName=guest
       - RabbitMQ__Password=guest
     networks:
       - myapp-network
   fitness.nutrition:
+    container_name: nutrition-api
     image: ${DOCKER_REGISTRY-}fitnessnutrition
     build:
       context: .
       dockerfile: Fitness.Nutrition/Dockerfile
+    ports:
+      - "5191:80"      # External access
+    depends_on:
+      db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_started
+      fitness.calculationengine:
+        condition: service_started
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=db,1433;Database=Fitness.Nutrition;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True;
+      - RabbitMQ__Host=rabbitmq
+      - RabbitMQ__UserName=guest
+      - RabbitMQ__Password=guest
+      - ASPNETCORE_URLS=http://+:80
+      - Services__FCE__GrpcUrl=https://calculationengine-api
+    networks:
+      - myapp-network
   fitness.progresstracking:
+    container_name: progresstracking-api
     image: ${DOCKER_REGISTRY-}fitnessprogresstracking
     build:
       context: .
       dockerfile: Fitness.ProgressTracking/Dockerfile
   fitness.userprofile:
+    container_name: userprofile-api
     image: ${DOCKER_REGISTRY-}fitnessuserprofile
     build:
       context: .
       dockerfile: Fitness.UserProfile/Dockerfile
+    depends_on:
+      - db
+      - rabbitmq 
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=db,1433;Database=Fitness.UserProfile;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True;
+      - RabbitMQ__Host=rabbitmq # <-- Add connection info for RabbitMQ
+      - RabbitMQ__UserName=guest
+      - RabbitMQ__Password=guest
+    networks:
+      - myapp-network
   fitness.workout:
+    container_name: workout-api
     image: ${DOCKER_REGISTRY-}fitnessworkout
     build:
       context: .
       dockerfile: Fitness.Workout/Dockerfile
-  db:
-    image: mcr.microsoft.com/mssql/server:2022-latest
-    container_name: sqlserverdb
-    ports:
-      - "1433:1433"
-    environment:
-      - ACCEPT_EULA=Y
-      - MSSQL_SA_PASSWORD=YourStrong!Passw0rd
-    volumes:
-      - sqlserver_data:/var/opt/mssql
-    networks:
-      - myapp-network
+  # db:
+  #   image: mcr.microsoft.com/mssql/server:2022-latest
+  #   container_name: sqlserverdb
+  #   ports:
+  #     - "1433:1433"
+  #   environment:
+  #     - ACCEPT_EULA=Y
+  #     - MSSQL_SA_PASSWORD=YourStrong!Passw0rd
+  #   volumes:
+  #     - sqlserver_data:/var/opt/mssql
+  #   networks:
+  #     - myapp-network
   rabbitmq:                             # <-- New RabbitMQ service
     image: rabbitmq:3-management        # <-- Image with management UI [citation:4][citation:9]
     container_name: rabbitmq

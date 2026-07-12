@@ -8,9 +8,12 @@ public static class InfrastructureServiceCollectionExtenstion
 {
     public static IServiceCollection AddInfrastructureDependancies(this IServiceCollection services ,IConfiguration configuration)
     {
+        var connectionString = configuration.GetConnectionString("DefaultConnection");
         services.AddDbContext<CalculationEngineDbContext>(options =>
             options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
         services.AddScoped(typeof(Repository<>));
+
+        services.AddGrpc();
         return services;
     }
 }

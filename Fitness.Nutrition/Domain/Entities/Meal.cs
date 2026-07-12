@@ -1,8 +1,7 @@
 namespace Fitness.Nutrition.Domain.Entities;
 
-public class Meal
+public class Meal :BaseEntity
 {
-    public int MealId { get; set; }
     public string Name { get; set; } = string.Empty;
     public string Type { get; set; } = string.Empty;
     public double Calories { get; set; }

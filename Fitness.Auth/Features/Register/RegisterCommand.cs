@@ -1,15 +1,13 @@
-﻿using BuildingBlocks.Models;
-using Fitness.Auth.Domain.Entities;
-using Fitness.Auth.Infrastructure.MessageBroker.Contacts;
+﻿using Fitness.Auth.Domain.Entities;
 using Fitness.Auth.Shared.Responses;
-using FluentValidation;
+using Fitness.Shared.Messaging.Auth;
 using MassTransit;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 
 namespace Fitness.Auth.Features.Register;
 
-public record RegisterCommand(string Email, string Password) : IRequest<RequestResult<RegisterResponse>>;
+public record RegisterCommand(string Email, string Password , string FirstName , string LastName ,string PhoneNumber) : IRequest<RequestResult<RegisterResponse>>;
 
 public record RegisterResponse(Guid UserId, string Email);
 public class RegisterHandler(
@@ -43,7 +41,8 @@ public class RegisterHandler(
             logger.LogWarning("Register failed for identity policy reasons: {Detail}", detail);
             return RequestResult<RegisterResponse>.Failure(ResultCode.WeakPassword);
         }
-       await _publishEndpoint.Publish(new UserRegisteredEvent(user.Id, user.Email!), cancellationToken);
+       await _publishEndpoint.Publish(new UserRegisteredEvent(user.Id, user.Email!,request.FirstName,request.LastName,request.PhoneNumber
+           ), cancellationToken);
         logger.LogInformation("User {UserId} registered", user.Id);
         return RequestResult<RegisterResponse>.succeeded(new RegisterResponse(user.Id, user.Email!),ResultCode.RegistrationSuccess);
     }

@@ -1,7 +1,9 @@
 using BuildingBlocks.Middleware;
 using Fitness.CalculationEngine.Extensions;
+using Fitness.CalculationEngine.Infrastructure.Integration.GRPC;
 using Fitness.CalculationEngine.Infrastructure.Persistence.DbContexts;
 using Fitness.CalculationEngine.Shared.Interfaces;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
@@ -12,14 +14,31 @@ public class Program
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
+        var isRunningInContainer = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true";
+        builder.WebHost.ConfigureKestrel(options =>
+        {
+            if (isRunningInContainer)
+            {
+                // REST/Swagger/Scalar traffic — HTTP/1.1 on 8080
+                options.ListenAnyIP(8080, o => o.Protocols = HttpProtocols.Http1);
 
+                // gRPC traffic — HTTP/2 cleartext (h2c) on 8081
+                options.ListenAnyIP(8081, o => o.Protocols = HttpProtocols.Http2);
+            }
+            else
+            {
+                // local `dotnet run` / VS debug — keep your existing dev ports
+                options.ListenAnyIP(5264, o => o.Protocols = HttpProtocols.Http1AndHttp2);
+                options.ListenAnyIP(7061, o => o.Protocols = HttpProtocols.Http1AndHttp2);
+            }
+        });
         builder.Services.AddControllers();
         builder.Services.AddSwaggerGen();
         //builder.Services.AddOpenApi();
 
         builder.Services.RegisterApplicationDependancies(builder.Configuration);
-
-        var app = builder.Build();
+     
+            var app = builder.Build();
 
         if (app.Environment.IsDevelopment())
         {
@@ -51,6 +70,7 @@ public class Program
         app.UseMiddleware<ExceptionHandlingMiddleware>();
         app.UseHttpsRedirection();
         app.UseAuthorization();
+        app.MapGrpcService<FceGrpcService>();
         app.MapControllers();
         app.Run();
     }

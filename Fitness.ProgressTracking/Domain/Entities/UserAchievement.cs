@@ -1,10 +1,9 @@
 namespace Fitness.ProgressTracking.Domain.Entities;
 
-public class UserAchievement
+public class UserAchievement : BaseEntity
 {
-    public int Id { get; set; }
-    public int UserId { get; set; }
-    public int AchievementId { get; set; }
+    public string UserId { get; set; }
+    public Guid AchievementId { get; set; }
     public DateTime EarnedAt { get; set; } = DateTime.UtcNow;
 
     public Achievement Achievement { get; set; } = null!;
